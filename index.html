@@ -907,34 +907,232 @@ chs.forEach(c=>navObs.observe(c));
 <script>
 (function() {
   function renderBixScores() {
-    if (typeof Vex === 'undefined') return;
-    var VF=Vex.Flow, Renderer=VF.Renderer, Stave=VF.Stave, StaveNote=VF.StaveNote;
-    var Voice=VF.Voice, Formatter=VF.Formatter, Beam=VF.Beam, Accidental=VF.Accidental;
-    var RED='#7A3B1E', INK='#1A1610', BLUE='#1f4a7a', GREEN='#1a6b35', GHOST='#bbb', WARM='#7a5040';
-    function mkR(id,w,h){var div=document.getElementById(id);if(!div)return null;var r=new Renderer(div,Renderer.Backends.SVG);r.resize(w,h);return r;}
-    function note(keys,dur,color){var n=new StaveNote({keys:keys,duration:dur});if(color)n.setStyle({fillStyle:color,strokeStyle:color});return n;}
-    function flat(n,i){return n.addModifier(new Accidental('b'),i||0);}
-    function sharp(n,i){return n.addModifier(new Accidental('#'),i||0);}
-    function svgEl(id){return document.querySelector('#'+id+' svg');}
-    function addSVG(id,tag,attrs){var svg=svgEl(id);if(!svg)return;var el=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.keys(attrs).forEach(function(k){el.setAttribute(k,attrs[k]);});svg.appendChild(el);return el;}
-    function addText(id,x,y,text,color,size,anchor){var t=addSVG(id,'text',{x:x,y:y,'font-size':size||11,'font-family':'Georgia,serif','font-style':'italic',fill:color||RED,'text-anchor':anchor||'start'});if(t)t.textContent=text;}
-    function addLine(id,x1,y1,x2,y2,color,dash,w){addSVG(id,'line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:color||RED,'stroke-width':w||1.5,opacity:'0.75','stroke-dasharray':dash||''});}
-    function addCircle(id,cx,cy,r,stroke,fill,sw){addSVG(id,'circle',{cx:cx,cy:cy,r:r,stroke:stroke||RED,'stroke-width':sw||1.5,fill:fill||'none'});}
-    function addArrow(id,x1,y1,x2,y2,color){addLine(id,x1,y1,x2,y2,color,'5,3',1.5);var ang=Math.atan2(y2-y1,x2-x1),al=8;var pts=x2+','+y2+' '+(x2-al*Math.cos(ang-0.4))+','+(y2-al*Math.sin(ang-0.4))+' '+(x2-al*Math.cos(ang+0.4))+','+(y2-al*Math.sin(ang+0.4));addSVG(id,'polygon',{points:pts,fill:color||RED,opacity:'0.85'});}
-    function rnLabel(id,x,y,text,color){addText(id,x,y,text,color,12,'middle');}
-    // B.1
-    (function(){var r=mkR('b1',680,190);if(!r)return;var ctx=r.getContext();var stave=new Stave(20,30,640);stave.addClef('treble').addTimeSignature('6/4').setContext(ctx).draw();var notes=[flat(note(['eb/5'],'q',RED)),flat(note(['db/5'],'q')),note(['c/5'],'q',RED),flat(note(['bb/4'],'q')),flat(note(['ab/4'],'q',RED)),note(['g/4'],'h',INK)];var v=new Voice({num_beats:6,beat_value:4}).addTickables(notes);new Formatter().joinVoices([v]).format([v],590);v.draw(ctx,stave);addArrow('b1',80,22,530,40,RED);addText('b1',538,38,'↘ continuous sweep — 6 sample points',RED,9);var rnX=[80,185,288,390,492,570],rns=['♭III','♭II','I','♭VII','♭VI','V'],rnC=[RED,INK,RED,INK,RED,'#555'];rns.forEach(function(rn,i){rnLabel('b1',rnX[i],175,rn,rnC[i]);});addLine('b1',68,182,530,182,RED,'',1);addText('b1',160,191,'WT₁ = {0,2,4,6,8,10} — six-point equal-interval sampling of S¹',RED,9);})();
-    // B.2
-    (function(){var r=mkR('b2',680,225);if(!r)return;var ctx=r.getContext();var stave=new Stave(20,30,280);stave.addClef('treble').addTimeSignature('4/4').setContext(ctx).draw();var cPlus=new StaveNote({keys:['c/4','e/4','g#/4'],duration:'w'});cPlus.addModifier(new Accidental('#'),2);cPlus.setStyle({fillStyle:RED,strokeStyle:RED});var v=new Voice({num_beats:4,beat_value:4}).addTickables([cPlus]);new Formatter().joinVoices([v]).format([v],230);v.draw(ctx,stave);addText('b2',40,188,'C+ = {C, E, G♯} = {0, 4, 8}',RED,10);addText('b2',40,202,'T₄(C+) = C+  ·  I(C+) = C+','#4a4035',9);var cx=520,cy=112,rad=76;addCircle('b2',cx,cy,rad,'#cec3a8','none',1.5);var labels=['C','C♯','D','E♭','E','F','F♯','G','G♯','A','B♭','B'],augIdx=[0,4,8];for(var i=0;i<12;i++){var ang=(i*30-90)*Math.PI/180,px=cx+rad*Math.cos(ang),py=cy+rad*Math.sin(ang),isAug=augIdx.indexOf(i)>-1;addCircle('b2',px,py,isAug?6:3,isAug?RED:'#cec3a8',isAug?RED:'#e0d8c4',1.5);var lr=rad+14,lx=cx+lr*Math.cos(ang),ly=cy+lr*Math.sin(ang),t=addSVG('b2','text',{x:lx-6,y:ly+4,'font-size':'9','font-family':'Georgia,serif',fill:isAug?RED:'#999','font-weight':isAug?'bold':'normal'});if(t)t.textContent=labels[i];}var triPts=augIdx.map(function(i){var ang=(i*30-90)*Math.PI/180;return{x:cx+rad*Math.cos(ang),y:cy+rad*Math.sin(ang)};});for(var j=0;j<3;j++){addLine('b2',triPts[j].x,triPts[j].y,triPts[(j+1)%3].x,triPts[(j+1)%3].y,RED,'',2);}addText('b2',cx-8,cy+4,'120°',RED,9,'middle');addText('b2',330,100,'S¹','#4a4035',16);})();
-    // B.3
-    (function(){var r=mkR('b3',680,200);if(!r)return;var ctx=r.getContext();var panels=[{x:20,color:RED,keys:['c/4','eb/4','f#/4','a/4'],accs:[[1,'b'],[2,'#']],label:'Δ₁: {C, E♭, F♯, A}'},{x:245,color:BLUE,keys:['d/4','f/4','g#/4','b/4'],accs:[[2,'#']],label:'Δ₂: {D, F, G♯, B}'},{x:470,color:GREEN,keys:['c#/4','e/4','g/4','bb/4'],accs:[[0,'#'],[3,'b']],label:'Δ₃: {C♯, E, G, B♭}'}];panels.forEach(function(p){var stave=new Stave(p.x,25,205);stave.addClef('treble').setContext(ctx).draw();var n=new StaveNote({keys:p.keys,duration:'w'});n.setStyle({fillStyle:p.color,strokeStyle:p.color});p.accs.forEach(function(a){n.addModifier(new Accidental(a[1]),a[0]);});var v=new Voice({num_beats:4,beat_value:4}).addTickables([n]);new Formatter().joinVoices([v]).format([v],155);v.draw(ctx,stave);addText('b3',p.x+8,175,p.label,p.color,10);addText('b3',p.x+8,187,'90° spacing on S¹',p.color,8);});addArrow('b3',228,90,242,90,'#4a4035');addArrow('b3',452,90,467,90,'#4a4035');})();
-    // B.4
-    (function(){var r=mkR('b4',680,215);if(!r)return;var ctx=r.getContext();var chords=[{x:20,keys:['c/4','e/4','g#/4'],label:'C+',rn:'I (C)',accs:[[2,'#']],col:RED},{x:200,keys:['eb/4','g/4','b/4'],label:'E♭+',rn:'I (E♭)',accs:[[0,'b']],col:BLUE},{x:390,keys:['ab/4','c/5','e/5'],label:'A♭+',rn:'I (A♭)',accs:[[0,'b']],col:GREEN},{x:575,keys:['c/4','e/4','g#/4'],label:'C+',rn:'I (C)',accs:[[2,'#']],col:RED}];chords.forEach(function(ch,idx){var w=idx===3?95:170;var stave=new Stave(ch.x,30,w);if(idx===0)stave.addClef('treble').addTimeSignature('4/4');stave.setContext(ctx).draw();var n=new StaveNote({keys:ch.keys,duration:'w'});n.setStyle({fillStyle:ch.col,strokeStyle:ch.col});ch.accs.forEach(function(a){n.addModifier(new Accidental(a[1]),a[0]);});var v=new Voice({num_beats:4,beat_value:4}).addTickables([n]);new Formatter().joinVoices([v]).format([v],w-28);v.draw(ctx,stave);addText('b4',ch.x+6,178,ch.label,ch.col,11);rnLabel('b4',ch.x+(idx<3?65:38),196,ch.rn,ch.col);});var moves=[{x1:182,x2:197,label:'T₃'},{x1:363,x2:387,label:'T₅'},{x1:557,x2:572,label:'T₄'}];moves.forEach(function(m){addArrow('b4',m.x1,78,m.x2,78,RED);addText('b4',(m.x1+m.x2)/2-6,70,m.label,RED,9,'middle');});addLine('b4',672,105,680,105,RED,'3,2',1.2);addLine('b4',680,105,680,148,RED,'3,2',1.2);addLine('b4',680,148,30,148,RED,'3,2',1.2);addArrow('b4',30,148,30,118,RED);addText('b4',320,163,'T₃∘T₅∘T₄ = identity — closed cycle',RED,9,'middle');})();
-    // B.5
-    (function(){var r=mkR('b5',680,205);if(!r)return;var ctx=r.getContext();var stave=new Stave(20,22,640);stave.addClef('treble').setContext(ctx).draw();var chromatic=[note(['c/4'],'16',RED),sharp(note(['c/4'],'16',GHOST)),note(['d/4'],'16',WARM),flat(note(['e/4'],'16',GHOST)),note(['e/4'],'16',RED),note(['f/4'],'16',GHOST),sharp(note(['f/4'],'16',WARM)),note(['g/4'],'16',GHOST),sharp(note(['g/4'],'16',RED)),note(['a/4'],'16',GHOST),flat(note(['b/4'],'16',WARM)),note(['b/4'],'16',GHOST)];var v=new Voice({num_beats:3,beat_value:4}).addTickables(chromatic);new Formatter().joinVoices([v]).format([v],590);var beam1=new Beam(chromatic.slice(0,8)),beam2=new Beam(chromatic.slice(8,12));v.draw(ctx,stave);beam1.setContext(ctx).draw();beam2.setContext(ctx).draw();addCircle('b5',28,183,4,RED,RED,1);addText('b5',36,187,'= C+ (3-pt)',RED,9);addCircle('b5',155,183,4,WARM,WARM,1);addText('b5',163,187,'= WT₁ only (6-pt)',WARM,9);addCircle('b5',310,183,4,GHOST,'none',1.5);addText('b5',318,187,'= gap (the mist)',GHOST,9);})();
+    // Support both Vex.Flow and direct VexFlow 4.x namespace
+    var VF = (typeof VexFlow !== 'undefined') ? VexFlow :
+             (typeof Vex !== 'undefined' && Vex.Flow) ? Vex.Flow :
+             (typeof Vex !== 'undefined') ? Vex : null;
+    if (!VF) { console.warn('VexFlow not loaded'); return; }
+
+    // Make sure core classes exist
+    if (!VF.Renderer || !VF.Stave) {
+      console.warn('VexFlow classes not found on', VF);
+      return;
+    }
+
+    var Renderer = VF.Renderer;
+    var Stave = VF.Stave;
+    var StaveNote = VF.StaveNote;
+    var Voice = VF.Voice;
+    var Formatter = VF.Formatter;
+    var Beam = VF.Beam;
+    var Accidental = VF.Accidental;
+
+    var RED='#7A3B1E', INK='#1A1610', BLUE='#1f4a7a', GREEN='#1a6b35', GHOST='#aaa', WARM='#7a5040';
+
+    function mkR(id, w, h) {
+      var div = document.getElementById(id);
+      if (!div) { console.warn('No div:', id); return null; }
+      div.innerHTML = '';
+      var r = new Renderer(div, Renderer.Backends.SVG);
+      r.resize(w, h);
+      return r;
+    }
+    function mkNote(keys, dur, color) {
+      var n = new StaveNote({ keys: keys, duration: dur, auto_stem: true });
+      if (color) n.setStyle({ fillStyle: color, strokeStyle: color });
+      return n;
+    }
+    function addAcc(n, idx, type) {
+      n.addModifier(new Accidental(type), idx);
+      return n;
+    }
+    function svgOf(id) { return document.querySelector('#' + id + ' svg'); }
+    function addEl(id, tag, attrs) {
+      var svg = svgOf(id); if (!svg) return null;
+      var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (var k in attrs) el.setAttribute(k, attrs[k]);
+      svg.appendChild(el); return el;
+    }
+    function txt(id, x, y, s, col, sz, anchor) {
+      var t = addEl(id, 'text', { x:x, y:y, 'font-size': sz||10,
+        'font-family':'Georgia,serif', 'font-style':'italic',
+        fill: col||RED, 'text-anchor': anchor||'start' });
+      if (t) t.textContent = s;
+    }
+    function ln(id, x1,y1,x2,y2,col,dash,w) {
+      addEl(id,'line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:col||RED,
+        'stroke-width':w||1.5,opacity:'0.8','stroke-dasharray':dash||''});
+    }
+    function circ(id, cx,cy,r,stroke,fill,sw) {
+      addEl(id,'circle',{cx:cx,cy:cy,r:r,stroke:stroke||RED,
+        'stroke-width':sw||1.5,fill:fill||'none'});
+    }
+    function arrow(id,x1,y1,x2,y2,col) {
+      ln(id,x1,y1,x2,y2,col,'4,3',1.5);
+      var a=Math.atan2(y2-y1,x2-x1),al=7;
+      var pts=[x2,y2,x2-al*Math.cos(a-0.4),y2-al*Math.sin(a-0.4),
+               x2-al*Math.cos(a+0.4),y2-al*Math.sin(a+0.4)].join(' ');
+      addEl(id,'polygon',{points:pts,fill:col||RED,opacity:'0.9'});
+    }
+    function drawVoice(ctx, stave, notes, beats) {
+      var v = new Voice({ num_beats: beats, beat_value: 4 });
+      v.setMode(Voice.Mode.SOFT);
+      v.addTickables(notes);
+      new Formatter().joinVoices([v]).format([v], stave.getWidth() - 50);
+      v.draw(ctx, stave);
+      return v;
+    }
+
+    // ── Score B.1: In a Mist opening phrase ─────────────────────────────────
+    try {
+      var r = mkR('b1', 660, 195); if (!r) throw 'no renderer';
+      var ctx = r.getContext();
+      var stave = new Stave(15, 35, 630);
+      stave.addClef('treble').addTimeSignature('6/4').setContext(ctx).draw();
+      var notes = [
+        addAcc(mkNote(['eb/5'],'q',RED), 0,'b'),
+        addAcc(mkNote(['db/5'],'q'),     0,'b'),
+        mkNote(['c/5'],'q',RED),
+        addAcc(mkNote(['bb/4'],'q'),     0,'b'),
+        addAcc(mkNote(['ab/4'],'q',RED), 0,'b'),
+        mkNote(['g/4'],'h', INK)
+      ];
+      drawVoice(ctx, stave, notes, 6);
+      arrow('b1', 75, 20, 520, 38, RED);
+      txt('b1', 528, 36, '6 sample points from S¹', RED, 9);
+      var rnX=[75,182,288,392,495,568];
+      var rns=['♭III','♭II','I','♭VII','♭VI','V'];
+      var rnC=[RED,INK,RED,INK,RED,'#555'];
+      rns.forEach(function(rn,i){ txt('b1',rnX[i],180,rn,rnC[i],11,'middle'); });
+      ln('b1',63,186,548,186,RED,'',1);
+      txt('b1',130,193,'WT₁ = {0,2,4,6,8,10} — six-point equal-interval sampling',RED,9);
+    } catch(e) { console.error('B.1 error:', e); }
+
+    // ── Score B.2: C+ chord + pitch circle ──────────────────────────────────
+    try {
+      var r2 = mkR('b2', 660, 230); if (!r2) throw 'no renderer';
+      var ctx2 = r2.getContext();
+      var stave2 = new Stave(15, 35, 270);
+      stave2.addClef('treble').addTimeSignature('4/4').setContext(ctx2).draw();
+      var cPlus = mkNote(['c/4','e/4','g#/4'], 'w', RED);
+      addAcc(cPlus, 2, '#');
+      drawVoice(ctx2, stave2, [cPlus], 4);
+      txt('b2', 35, 192, 'C+ = {C, E, G♯} = {0, 4, 8}', RED, 10);
+      txt('b2', 35, 206, 'T₄(C+) = C+  ·  I(C+) = C+  ·  Sym: ℤ/3ℤ', '#4a4035', 9);
+      // Pitch circle
+      var cx=510, cy=115, rad=78;
+      circ('b2', cx,cy,rad,'#ccc','none',1.5);
+      var labels=['C','C♯','D','E♭','E','F','F♯','G','G♯','A','B♭','B'];
+      var augIdx=[0,4,8];
+      for(var i=0;i<12;i++){
+        var ang=(i*30-90)*Math.PI/180;
+        var px=cx+rad*Math.cos(ang), py=cy+rad*Math.sin(ang);
+        var isA=augIdx.indexOf(i)>-1;
+        circ('b2',px,py,isA?6:3,isA?RED:'#ccc',isA?RED:'#e0d8c4',1.5);
+        var lx=cx+(rad+14)*Math.cos(ang)-5, ly=cy+(rad+14)*Math.sin(ang)+4;
+        var t=addEl('b2','text',{x:lx,y:ly,'font-size':'9','font-family':'Georgia,serif',
+          fill:isA?RED:'#aaa','font-weight':isA?'bold':'normal'});
+        if(t) t.textContent=labels[i];
+      }
+      var triPts=augIdx.map(function(i){
+        var a=(i*30-90)*Math.PI/180;
+        return {x:cx+rad*Math.cos(a),y:cy+rad*Math.sin(a)};
+      });
+      for(var j=0;j<3;j++){
+        ln('b2',triPts[j].x,triPts[j].y,triPts[(j+1)%3].x,triPts[(j+1)%3].y,RED,'',2);
+      }
+      txt('b2',cx-5,cy+4,'120°',RED,8,'middle');
+      txt('b2',320,105,'S¹','#555',16);
+    } catch(e) { console.error('B.2 error:', e); }
+
+    // ── Score B.3: Three dim chords ─────────────────────────────────────────
+    try {
+      var r3 = mkR('b3', 660, 195); if (!r3) throw 'no renderer';
+      var ctx3 = r3.getContext();
+      var panels = [
+        {x:10, col:RED,  keys:['c/4','eb/4','f#/4','a/4'], accs:[[1,'b'],[2,'#']], label:'Δ₁ = {C, E♭, F♯, A}'},
+        {x:235,col:BLUE, keys:['d/4','f/4','g#/4','b/4'],  accs:[[2,'#']],          label:'Δ₂ = {D, F, G♯, B}'},
+        {x:460,col:GREEN,keys:['c#/4','e/4','g/4','bb/4'], accs:[[0,'#'],[3,'b']], label:'Δ₃ = {C♯, E, G, B♭}'}
+      ];
+      panels.forEach(function(p){
+        var st=new Stave(p.x,28,205); st.addClef('treble').setContext(ctx3).draw();
+        var n=mkNote(p.keys,'w',p.col);
+        p.accs.forEach(function(a){ addAcc(n,a[0],a[1]); });
+        drawVoice(ctx3,st,[n],4);
+        txt('b3',p.x+5,172,p.label,p.col,10);
+        txt('b3',p.x+5,184,'90° equal spacing on S¹',p.col,8);
+      });
+      arrow('b3',218,88,232,88,'#555');
+      arrow('b3',443,88,457,88,'#555');
+    } catch(e) { console.error('B.3 error:', e); }
+
+    // ── Score B.4: Modulation cycle ──────────────────────────────────────────
+    try {
+      var r4 = mkR('b4', 660, 210); if (!r4) throw 'no renderer';
+      var ctx4 = r4.getContext();
+      var chords=[
+        {x:10, keys:['c/4','e/4','g#/4'],  label:'C+',  rn:'I / C',  accs:[[2,'#']], col:RED},
+        {x:185,keys:['eb/4','g/4','b/4'],   label:'E♭+', rn:'I / E♭', accs:[[0,'b']], col:BLUE},
+        {x:375,keys:['ab/4','c/5','e/5'],   label:'A♭+', rn:'I / A♭', accs:[[0,'b']], col:GREEN},
+        {x:560,keys:['c/4','e/4','g#/4'],   label:'C+',  rn:'I / C',  accs:[[2,'#']], col:RED}
+      ];
+      chords.forEach(function(ch,idx){
+        var w=idx===3?90:160;
+        var st=new Stave(ch.x,32,w);
+        if(idx===0) st.addClef('treble').addTimeSignature('4/4');
+        st.setContext(ctx4).draw();
+        var n=mkNote(ch.keys,'w',ch.col);
+        ch.accs.forEach(function(a){ addAcc(n,a[0],a[1]); });
+        drawVoice(ctx4,st,[n],4);
+        txt('b4',ch.x+5,175,ch.label,ch.col,11);
+        txt('b4',ch.x+(idx<3?58:35),191,ch.rn,ch.col,9,'middle');
+      });
+      [{x1:168,x2:182,t:'T₃'},{x1:358,x2:372,t:'T₅'},{x1:543,x2:557,t:'T₄'}].forEach(function(m){
+        arrow('b4',m.x1,75,m.x2,75,RED);
+        txt('b4',(m.x1+m.x2)/2-4,67,m.t,RED,9,'middle');
+      });
+      ln('b4',648,100,656,100,RED,'3,2',1.2);
+      ln('b4',656,100,656,145,RED,'3,2',1.2);
+      ln('b4',656,145,25,145,RED,'3,2',1.2);
+      arrow('b4',25,145,25,115,RED);
+      txt('b4',300,158,'T₃ ∘ T₅ ∘ T₄ = identity — closed cycle',RED,9,'middle');
+    } catch(e) { console.error('B.4 error:', e); }
+
+    // ── Score B.5: Sampling hierarchy ────────────────────────────────────────
+    try {
+      var r5 = mkR('b5', 660, 200); if (!r5) throw 'no renderer';
+      var ctx5 = r5.getContext();
+      var st5=new Stave(15,25,625); st5.addClef('treble').setContext(ctx5).draw();
+      var chromatic=[
+        mkNote(['c/4'],'16',RED),
+        addAcc(mkNote(['c/4'],'16',GHOST),0,'#'),
+        mkNote(['d/4'],'16',WARM),
+        addAcc(mkNote(['e/4'],'16',GHOST),0,'b'),
+        mkNote(['e/4'],'16',RED),
+        mkNote(['f/4'],'16',GHOST),
+        addAcc(mkNote(['f/4'],'16',WARM),0,'#'),
+        mkNote(['g/4'],'16',GHOST),
+        addAcc(mkNote(['g/4'],'16',RED),0,'#'),
+        mkNote(['a/4'],'16',GHOST),
+        addAcc(mkNote(['b/4'],'16',WARM),0,'b'),
+        mkNote(['b/4'],'16',GHOST)
+      ];
+      var v5=new Voice({num_beats:3,beat_value:4});
+      v5.setMode(Voice.Mode.SOFT);
+      v5.addTickables(chromatic);
+      new Formatter().joinVoices([v5]).format([v5],575);
+      v5.draw(ctx5,st5);
+      new Beam(chromatic.slice(0,8)).setContext(ctx5).draw();
+      new Beam(chromatic.slice(8,12)).setContext(ctx5).draw();
+      circ('b5',25,182,4,RED,RED,1);     txt('b5',34,186,'C+ (3-pt, 120°)',RED,9);
+      circ('b5',160,182,4,WARM,WARM,1); txt('b5',169,186,'WT₁ only (6-pt, 60°)',WARM,9);
+      circ('b5',310,182,4,GHOST,'none',1.5); txt('b5',319,186,'gap — the mist (measure-theoretically everything)',GHOST,9);
+    } catch(e) { console.error('B.5 error:', e); }
   }
-  function deferredRender(){setTimeout(renderBixScores,400);}
-  if(document.readyState==='loading'){window.addEventListener('load',deferredRender);}else{deferredRender();}
+
+  function deferredRender(){ setTimeout(renderBixScores, 600); }
+  if(document.readyState==='loading'){ window.addEventListener('load', deferredRender); }
+  else { deferredRender(); }
 })();
 </script>
 </body>
