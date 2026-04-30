@@ -43,7 +43,7 @@ body{font-family:var(--serif);background:var(--sand);color:var(--ink);line-heigh
 .landing-nav a span{color:var(--mist);margin-right:.6rem}
 #content{max-width:700px;margin:0 auto;padding:80px 2rem 6rem;transition:margin-left .3s}
 #content.shifted{margin-left:230px}
-.chapter{padding:5rem 0 4rem;border-bottom:1px solid var(--parch);opacity:0;transform:translateY(12px);transition:opacity .7s,transform .7s;scroll-margin-top:60px}
+.chapter{padding:5rem 0 4rem;border-bottom:1px solid var(--parch);opacity:0;transform:translateY(12px);transition:opacity .7s,transform .7s;scroll-margin-top:60px}#appendix-a,#appendix-b,#appendix-c{opacity:1;transform:none}
 .chapter.visible{opacity:1;transform:none}
 .chapter-label{font-family:var(--sans);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
 .chapter-title{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--rust);line-height:1.2;letter-spacing:-.01em}
@@ -933,7 +933,8 @@ chs.forEach(c=>navObs.observe(c));
     // B.5
     (function(){var r=mkR('b5',680,205);if(!r)return;var ctx=r.getContext();var stave=new Stave(20,22,640);stave.addClef('treble').setContext(ctx).draw();var chromatic=[note(['c/4'],'16',RED),sharp(note(['c/4'],'16',GHOST)),note(['d/4'],'16',WARM),flat(note(['e/4'],'16',GHOST)),note(['e/4'],'16',RED),note(['f/4'],'16',GHOST),sharp(note(['f/4'],'16',WARM)),note(['g/4'],'16',GHOST),sharp(note(['g/4'],'16',RED)),note(['a/4'],'16',GHOST),flat(note(['b/4'],'16',WARM)),note(['b/4'],'16',GHOST)];var v=new Voice({num_beats:3,beat_value:4}).addTickables(chromatic);new Formatter().joinVoices([v]).format([v],590);var beam1=new Beam(chromatic.slice(0,8)),beam2=new Beam(chromatic.slice(8,12));v.draw(ctx,stave);beam1.setContext(ctx).draw();beam2.setContext(ctx).draw();addCircle('b5',28,183,4,RED,RED,1);addText('b5',36,187,'= C+ (3-pt)',RED,9);addCircle('b5',155,183,4,WARM,WARM,1);addText('b5',163,187,'= WT₁ only (6-pt)',WARM,9);addCircle('b5',310,183,4,GHOST,'none',1.5);addText('b5',318,187,'= gap (the mist)',GHOST,9);})();
   }
-  if(document.readyState==='loading'){window.addEventListener('load',renderBixScores);}else{renderBixScores();}
+  function deferredRender(){setTimeout(renderBixScores,400);}
+  if(document.readyState==='loading'){window.addEventListener('load',deferredRender);}else{deferredRender();}
 })();
 </script>
 </body>
