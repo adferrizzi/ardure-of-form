@@ -42,7 +42,7 @@ body{font-family:var(--serif);background:var(--sand);color:var(--ink);line-heigh
 .landing-nav a span{color:var(--mist);margin-right:.6rem}
 #content{max-width:700px;margin:0 auto;padding:80px 2rem 6rem;transition:margin-left .3s}
 #content.shifted{margin-left:230px}
-.chapter{padding:5rem 0 4rem;border-bottom:1px solid var(--parch);opacity:0;transform:translateY(12px);transition:opacity .7s,transform .7s}
+.chapter{padding:5rem 0 4rem;border-bottom:1px solid var(--parch);opacity:0;transform:translateY(12px);transition:opacity .7s,transform .7s;scroll-margin-top:60px}
 .chapter.visible{opacity:1;transform:none}
 .chapter-label{font-family:var(--sans);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
 .chapter-title{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:400;color:var(--rust);line-height:1.2;letter-spacing:-.01em}
@@ -116,7 +116,7 @@ blockquote.epigraph cite{font-family:var(--sans);font-size:.68rem;letter-spacing
   </div>
 </section>
 <main id="content">
-ter" id="preface">
+<article class="chapter" id="preface">
   <div class="chapter-label">Front Matter</div>
   <h1 class="chapter-title">The Ardure of Form</h1>
   <p class="chapter-subtitle">Preface & Introduction</p>
