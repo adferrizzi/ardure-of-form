@@ -66,6 +66,197 @@ blockquote.epigraph cite{font-family:var(--sans);font-size:.68rem;letter-spacing
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @media(max-width:768px){#landing{grid-template-columns:1fr}#landing-img{height:55vw;min-height:240px}#landing-img img{height:100%}#landing-text{padding:2.5rem 1.5rem}#content{padding:70px 1.2rem 4rem}#content.shifted{margin-left:0}.chapter{opacity:1;transform:none;transition:none}}
+
+@media print {
+  /* Page setup — letter, generous margins */
+  @page {
+    size: letter;
+    margin: 1.1in 1.15in 1.0in 1.15in;
+  }
+  @page :first {
+    margin: 0;
+  }
+
+  /* Hide screen-only elements */
+  #topbar, #sidenav, #landing, .chapter.visible { display: block; }
+  #topbar, #sidenav { display: none !important; }
+  #landing { display: none !important; }
+
+  /* Reset body for print */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+    line-height: 1.7;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #content {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Every chapter starts on a new page */
+  .chapter {
+    page-break-before: always;
+    break-before: page;
+    opacity: 1 !important;
+    transform: none !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  /* TOC and bibliography get their own pages */
+  #toc-page {
+    page-break-before: always;
+    break-before: page;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  #bibliography {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  /* Title page — centered, no header */
+  #print-title-page {
+    page-break-after: always;
+    break-after: page;
+    text-align: center;
+    padding-top: 2.5in;
+  }
+
+  /* Keep these blocks together — never split across pages */
+  .bix-score,
+  .score-block,
+  .theorem-box,
+  .sidebar-box,
+  .math-block,
+  .math-display,
+  blockquote.epigraph,
+  .pull-quote,
+  .bix-pull,
+  .notes-section,
+  .bix-math {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Keep section headings with following content */
+  h2.section-head,
+  .bix-sect,
+  .chapter-label,
+  .chapter-title {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Keep short paragraphs with next paragraph */
+  p { orphans: 3; widows: 3; }
+
+  /* Notes section always starts fresh — avoid splitting footnotes */
+  .notes-section {
+    page-break-before: auto;
+    break-before: auto;
+  }
+  .footnote {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Running headers via CSS (top of each page) */
+  .chapter-title { font-size: 20pt; }
+  .chapter-label { font-size: 8pt; letter-spacing: 0.18em; }
+  .chapter-subtitle { font-size: 10pt; }
+
+  /* Section heads */
+  .section-head, .bix-sect {
+    font-size: 8pt;
+    border-bottom: 0.5pt solid #D9CDB8;
+    padding-bottom: 3pt;
+  }
+
+  /* Body text */
+  p { font-size: 10.5pt; line-height: 1.65; }
+
+  /* Scores — keep VexFlow SVG canvases together */
+  .bix-score-canvas, .score-canvas {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .bix-score-canvas svg, .score-canvas svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* MathJax rendered output */
+  .MathJax_Display {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Links — print URL after footnote links */
+  a[href^="#"] { color: #7A3B1E; text-decoration: none; }
+  a[href^="http"]:after { content: " (" attr(href) ")"; font-size: 8pt; color: #8A9BAD; }
+
+  /* TOC links */
+  .toc-entry a { color: #7A3B1E; text-decoration: none; }
+  .toc-entry { font-size: 11pt; line-height: 1.9; }
+  .toc-label { color: #B8893A; font-size: 8pt; letter-spacing: 0.15em; }
+
+  /* Bibliography */
+  .bib-entry { font-size: 9.5pt; line-height: 1.5; margin-bottom: 0.5em; text-indent: -1.5em; padding-left: 1.5em; }
+
+  /* Hide UI elements */
+  .btn-icon, button, #audio-player { display: none !important; }
+
+  /* Chapter rule becomes a short horizontal line */
+  .chapter-rule {
+    border: none;
+    border-top: 1pt solid #B8893A;
+    width: 2em;
+    margin: 0.8em 0 1.5em;
+  }
+}
+
+
+#bibliography .bib-body { margin-top: 1.5rem; }
+#bibliography .bib-entry {
+  font-size: 0.85rem;
+  color: var(--steel);
+  line-height: 1.6;
+  margin-bottom: 0.7rem;
+  text-indent: -1.5em;
+  padding-left: 1.5em;
+}
+#toc-page {
+  padding: 5rem 0 4rem;
+  border-bottom: 1px solid var(--parch);
+}
+.toc-entry {
+  font-size: 0.95rem;
+  line-height: 2;
+  color: var(--ink);
+  font-family: var(--serif);
+}
+.toc-entry a {
+  color: var(--rust);
+  text-decoration: none;
+}
+.toc-entry a:hover { text-decoration: underline; }
+.toc-label {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+#print-title-page { display: none; }
+@media print { #print-title-page { display: block; } }
+
 </style>
 </head>
 <body data-theme="light">
@@ -123,6 +314,37 @@ blockquote.epigraph cite{font-family:var(--sans);font-size:.68rem;letter-spacing
     </nav>
   </div>
 </section>
+<div id="print-title-page">
+  <div style="font-family:var(--serif);font-size:2.8rem;font-weight:300;color:var(--rust);letter-spacing:0.04em;line-height:1.1;margin-bottom:0.2em">The Ardure</div>
+  <div style="font-family:var(--sans);font-size:0.85rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--mist);margin:0.1em 0">of</div>
+  <div style="font-family:var(--serif);font-size:5rem;font-weight:600;color:var(--ink);letter-spacing:-0.02em;line-height:0.9;margin-bottom:1rem">Form</div>
+  <div style="width:2.5rem;height:1px;background:var(--gold);margin:1.5rem auto"></div>
+  <div style="font-family:var(--sans);font-size:0.78rem;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:2rem">Music &middot; Limit &middot; Wound</div>
+  <div style="font-family:var(--serif);font-size:1.1rem;color:var(--steel)">Anthony Ferrizzi</div>
+</div>
+<div id="toc-page">
+  <div class="chapter-label" style="margin-bottom:0.5rem">The Ardure of Form</div>
+  <h1 class="chapter-title">Contents</h1>
+  <div class="chapter-rule"></div>
+  <div style="margin-top:1.5rem">
+    <div class="toc-entry"><span class="toc-label">FRONT MATTER &nbsp;&mdash;&nbsp;</span> <a href="#preface">Preface &amp; Introduction</a></div>
+    <div class="toc-entry"><span class="toc-label">CHAPTER I &nbsp;&mdash;&nbsp;</span> <a href="#ch1">The Clothing Was Always Loose</a></div>
+    <div class="toc-entry"><span class="toc-label">CHAPTER II &nbsp;&mdash;&nbsp;</span> <a href="#ch2">The Measure of Nothing</a></div>
+    <div class="toc-entry"><span class="toc-label">CHAPTER III &nbsp;&mdash;&nbsp;</span> <a href="#ch3">The Logic of Harmonic Structure</a></div>
+    <div class="toc-entry"><span class="toc-label">CHAPTER IV &nbsp;&mdash;&nbsp;</span> <a href="#ch4">Epistemology — Knowledge at the Limit</a></div>
+    <div class="toc-entry"><span class="toc-label">CHAPTER V &nbsp;&mdash;&nbsp;</span> <a href="#ch5">Ontology — Resonance, Repetition, Ground</a></div>
+    <div class="toc-entry"><span class="toc-label">CHAPTER VI &nbsp;&mdash;&nbsp;</span> <a href="#ch6">Ethics — Amor Fati</a></div>
+    <div class="toc-entry"><span class="toc-label">CHAPTER VII &nbsp;&mdash;&nbsp;</span> <a href="#ch7">Aesthetics — Form, Wounds, and What Art Does</a></div>
+    <div class="toc-entry"><span class="toc-label">CHAPTER VIII &nbsp;&mdash;&nbsp;</span> <a href="#ch8">Music as Sound When Language Fails</a></div>
+    <div class="toc-entry"><span class="toc-label">CONCLUSION &nbsp;&mdash;&nbsp;</span> <a href="#conclusion">Da Capo al Coda</a></div>
+    <div style="height:1.2rem"></div>
+    <div class="toc-entry"><span class="toc-label">APPENDIX A &nbsp;&mdash;&nbsp;</span> <a href="#appendix-a">The Limit of Formality</a></div>
+    <div class="toc-entry"><span class="toc-label">APPENDIX B &nbsp;&mdash;&nbsp;</span> <a href="#appendix-b">Bix, Analyticity, Death</a></div>
+    <div class="toc-entry"><span class="toc-label">APPENDIX C &nbsp;&mdash;&nbsp;</span> <a href="#appendix-c">Figure, Knot, Wound</a></div>
+    <div style="height:1.2rem"></div>
+    <div class="toc-entry"><span class="toc-label">END MATTER &nbsp;&mdash;&nbsp;</span> <a href="#bibliography">Select Bibliography</a></div>
+  </div>
+</div>
 <main id="content">
 <article class="chapter" id="preface">
   <div class="chapter-label">Front Matter</div>
@@ -881,6 +1103,80 @@ Death = lim(Π) \ image(Π)
   </div>
 </article>
 
+
+<article class="chapter" id="bibliography">
+  <div class="chapter-label">End Matter</div>
+  <h1 class="chapter-title">Select Bibliography</h1>
+  <div class="chapter-rule"></div>
+  <div class="bib-body">
+    <p class="bib-entry">&quot;Différance&quot; in Margins of Philosophy, trans. Alan Bass (University of Chicago Press, 1982)</p>
+    <p class="bib-entry">Ahmad Jamal at the Pershing: But Not for Me (Argo, 1958) is the recording in question. Miles Davis’s acknowledgment of Jamal’s influence: Miles Davis with Quincy Troupe, Miles: The Autobiography (Simon &amp; Schuster, 1989), pp. 222–223</p>
+    <p class="bib-entry">Alice Coltrane’s harp-to-piano transition is documented across A Monastic Trio (Impulse!, 1968) and Universal Consciousness (Impulse!, 1971). See Franya Berkman, Monument Eternal: The Music of Alice Coltrane (Wesleyan University Press, 2010)</p>
+    <p class="bib-entry">Baruch Spinoza, Ethics, trans. Edwin Curley, in The Collected Works of Spinoza, Vol. I (Princeton University Press, 1985), Part I, props. 14–15. The analogy is strictly limited: I am not claiming the three rings are attributes of a substance, only that the binding is immanent rather than constitutive-through-lack</p>
+    <p class="bib-entry">Bickhard and Richie, On the Nature of Representation (Praeger, 1983)</p>
+    <p class="bib-entry">Carolyn Abbate, &quot;Music — Drastic or Gnostic?&quot; Critical Inquiry 30.3 (2004), pp. 505–536. Abbate’s distinction draws on the work of Vladimir Jankélévitch, who used &quot;gnostic&quot; in a related sense. Her argument that musicology has systematically privileged the gnostic at the expense of the drastic — that it has treated the score as primary and the performance as secondary — is the decisive critical point. The present chapter’s use of the distinction extends it in a direction Abbate does not pursue: toward the claim that the drastic mode is the mode of the limit</p>
+    <p class="bib-entry">Cavell on criteria: The Claim of Reason (Oxford University Press, 1979), Part One. Cavell’s corrective to Kripke’s skeptical reading of Wittgenstein is essential: criteria are not rules that could be satisfied or violated by definition, but practices that constitute the relevant form of life. When the criteria are challenged, what is challenged is not a claim but a practice</p>
+    <p class="bib-entry">Cecil Taylor, Unit Structures (Blue Note, 1966) and Conquistador! (Blue Note, 1966). For theoretical engagement, see Jost, Free Jazz, pp. 64–88</p>
+    <p class="bib-entry">Christian’s influence on bebop guitar is documented extensively. For technical analysis, see Barry Kernfeld, &quot;Two Coltranes,&quot; Annual Review of Jazz Studies 2 (1983). Christian established the template for single-note guitar in the jazz ensemble that persists through Hall and Lage</p>
+    <p class="bib-entry">Compare Slavoj Žižek, Less Than Nothing: Hegel and the Shadow of Dialectical Materialism (London: Verso, 2012), where the Real is reconstructed as ontological incompleteness rather than impossible kernel. My position is closer to but distinct from Žižek&#x27;s: I do not require incompleteness at the level of the substrate, only at the level of the projections</p>
+    <p class="bib-entry">Cora Diamond, &quot;Ethics, Imagination, and the Method of Wittgenstein,&quot; in The New Wittgenstein, ed. Alice Crary and Rupert Read (Routledge, 2000), pp. 149–173</p>
+    <p class="bib-entry">Da Capo, 1993). Bailey’s distinction between &quot;idiomatic&quot; improvisation (within a specific musical idiom) and &quot;non-idiomatic&quot; improvisation (without such constraint) maps, approximately, onto the distinction between projection from an established discrete framework and projection from the continuous field itself. Bailey was the first practitioner to articulate this distinction in print, and his interviews with improvisers from multiple traditions remain the primary document of non-idiomatic practice</p>
+    <p class="bib-entry">David Sudnow, Ways of the Hand: The Organization of Improvised Conduct (Harvard University Press, 1978). Sudnow’s phenomenological account of learning jazz piano — of the moment when the hands stop following instructions and start knowing — remains the most precise description in the literature of what Wittgenstein’s bedrock feels like from the inside of a musical practice</p>
+    <p class="bib-entry">Deleuze, The Logic of Sense, trans. Mark Lester with Charles Stivale (Columbia University Press, 1990), pp. 149–153. The formulation &quot;be worthy of what happens to you&quot; (être digne de ce qui nous arrive) is developed in relation to the Stoic ethics of the event — specifically the distinction between what happens to a body (the accident, the wound) and the pure event that the wound expresses (the becoming-wounded). To be worthy of the event is to affirm the becoming, not merely to endure the accident</p>
+    <p class="bib-entry">Derek Bailey, Improvisation: Its Nature and Practice in Music (British Library, 1980</p>
+    <p class="bib-entry">Derrida’s &quot;always already&quot;: the phrase appears throughout Of Grammatology, trans. Gayatri Chakravorty Spivak (Johns Hopkins University Press, 1976). The structural priority of the ground — its operation before thematization — is the key deconstructive move</p>
+    <p class="bib-entry">Dmitri Tymoczko, A Geometry of Music (Oxford University Press, 2011), Chapter 2, for the voice-leading geometry motivating the linear-algebraic representation used here</p>
+    <p class="bib-entry">Dmitri Tymoczko’s A Geometry of Music (Oxford University Press, 2011) represents the most sustained attempt to give voice-leading a continuous geometric foundation, working in n-dimensional orbifolds. See especially Chapter 2</p>
+    <p class="bib-entry">Ed Pluth, Signifiers and Acts (Albany: SUNY Press, 2007)</p>
+    <p class="bib-entry">F. William Lawvere, &quot;Metric spaces, generalized logic, and closed categories,&quot; Rendiconti del Seminario Matematico e Fisico di Milano 43 (1973), pp. 135–166</p>
+    <p class="bib-entry">For the Pontryagin duality between ℤ and S¹, see Edwin Hewitt and Kenneth A. Ross, Abstract Harmonic Analysis, Vol. I (Springer, 1963), Chapter 4</p>
+    <p class="bib-entry">Foucault’s historical a priori: introduced in The Order of Things (Vintage, 1994), developed in The Archaeology of Knowledge, trans. A. M. Sheridan Smith (Pantheon, 1972). The claim is that the conditions of possibility for a particular form of knowledge are historical and contingent, not transcendental and necessary — though they function as necessary within their historical formation</p>
+    <p class="bib-entry">Graham Harman’s object-oriented ontology: Tool-Being: Heidegger and the Metaphysics of Objects (Open Court, 2002), and The Quadruple Object (Zero Books, 2011). The critique of Harman’s withdrawn objects as a form of transcendence is developed in relation to the companion paper’s argument that the world has no outside</p>
+    <p class="bib-entry">Guerino Mazzola, The Topos of Music (Birkhäuser, 2002). For a critique aligned with the present argument see Dmitri Tymoczko&#x27;s review in Music Theory Online 13.1 (2007). On sheaves and voice leading see Tymoczko, A Geometry of Music (Oxford University Press, 2011)</p>
+    <p class="bib-entry">Gödel’s incompleteness theorems: Kurt Gödel, &quot;Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I,&quot; Monatshefte für Mathematik und Physik 38 (1931), pp. 173–198. English translation in Jean van Heijenoort, ed., From Frege to Gödel (Harvard University Press, 1967), pp. 596–616. For a philosophically careful treatment, see George Boolos, John Burgess, and Richard Jeffrey, Computability and Logic, 5th ed. (Cambridge University Press, 2007), Chapters 17–18</p>
+    <p class="bib-entry">Hamasyan: Red Hail (Nonesuch, 2013) and An Ancient Observer (Nonesuch, 2017). The Armenian duduk and folk traditions from which his microtonal vocabulary derives are documented in Komitas Vardapet’s collections, 1890s–1910s</p>
+    <p class="bib-entry">Heidegger’s ontological difference: Being and Time, trans. John Macquarrie and Edward Robinson (Harper &amp; Row, 1962), especially Division One. The claim that the Resonant Surface is not Heidegger’s Being is crucial: Being, for Heidegger, is not a being among beings but the condition of beings’ being-ness. The Resonant Surface is not a condition but a description — not transcendental but immanent</p>
+    <p class="bib-entry">Henri Focillon, La vie des formes (Presses Universitaires de France, 1934)</p>
+    <p class="bib-entry">Jacques Lacan, Le Séminaire, livre XXIII: Le sinthome (1975–1976), ed. Jacques-Alain Miller (Paris: Seuil, 2005)</p>
+    <p class="bib-entry">Jim Hall’s architectural approach is most clearly displayed in his duet recordings with Bill Evans: Undercurrent (United Artists, 1962) and Intermodulation (Verve, 1966)</p>
+    <p class="bib-entry">John Cage, 4’33&quot; (1952). The conceptual background is developed in Silence: Lectures and Writings (Wesleyan University Press, 1961), especially &quot;Experimental Music&quot; (1957) and &quot;Lecture on Nothing&quot; (1949). The claim that all sounds are music — or that music is the organization of sounds rather than the production of specifically musical sounds — is the philosophical core of Cage’s mature position</p>
+    <p class="bib-entry">Julian Lage: Squint (Blue Note, 2021) and View with a Room (Blue Note, 2022), the latter with Fred Hersch</p>
+    <p class="bib-entry">Kierkegaard’s concept of repetition: Repetition: A Venture in Experimenting Psychology, in Kierkegaard’s Writings, vol. VI, trans. Howard V. Hong and Edna H. Hong (Princeton University Press, 1983). The contrast with recollection is explicit in the opening pages: &quot;Repetition and recollection are the same movement, only in opposite directions</p>
+    <p class="bib-entry">Kripke’s meter-stick argument: Naming and Necessity (Harvard University Press, 1980), pp. 54–57. The argument is that the sentence &quot;The standard meter in Paris is one meter long&quot; is necessarily true (nothing could count as its being false) and yet not a priori (it is a contingent empirical fact that the bar exists and has the length it has). The Kripkean structure — necessary and contingent simultaneously — is the model for the epistemicity of Being</p>
+    <p class="bib-entry">Lacan, Le sinthome, session of 18 November 1975. The sinthome is thus not a symptom to be dissolved but a singular suture that holds a subject together</p>
+    <p class="bib-entry">Lorenzo Chiesa, Subjectivity and Otherness (Cambridge, MA: MIT Press, 2007)</p>
+    <p class="bib-entry">Matthew Shipp, Black Mystery School Pianists and Other Writings (Autonomedia, 2025). The lineage Shipp claims — Monk, Herbie Nichols, Cecil Taylor — is precisely the analytic lineage as defined in this chapter</p>
+    <p class="bib-entry">Moran’s collage approach: Modernistic (Blue Note, 2002) and The Bandwagon (Blue Note, 2003)</p>
+    <p class="bib-entry">Nietzsche’s amor fati: Ecce Homo, &quot;Why I Am So Clever,&quot; §10, in Basic Writings of Nietzsche, trans. Walter Kaufmann (Modern Library, 1968). The eternal return as ethical test rather than cosmological claim: Thus Spoke Zarathustra, Part III, &quot;The Vision and the Riddle.&quot; The reading of the eternal return as training of attention rather than training of the will departs from both the Nietzschean mainstream and Deleuze’s selective reading in Difference and Repetition</p>
+    <p class="bib-entry">On Ellington’s voicing practice and its relationship to spectral density, see Walter van de Leur, Something to Live For: The Music of Billy Strayhorn (Oxford University Press, 2002), and Gunther Schuller, The Swing Era (Oxford University Press, 1989). The claim about the Ellington sound as a Resonant Surface is developed in relation to the companion paper &quot;The Resonant Surface: Aesthetic Form as the Epistemology of Material Immanence.&quot;</p>
+    <p class="bib-entry">On the Borromean as figure rather than topological theorem in Lacan, see Jean-Claude Milner, L&#x27;œuvre claire: Lacan, la science, la philosophie (Paris: Seuil, 1995)</p>
+    <p class="bib-entry">On the contested status of Lacan&#x27;s late topology see Roberto Harari, How James Joyce Made His Name, trans. Luke Thurston (New York: Other Press, 2002)</p>
+    <p class="bib-entry">Powell’s bebop playing is most fully documented on the Verve and Blue Note sessions of the early 1950s. The clearest demonstration of the synthetic-at-velocity phenomenon is The Amazing Bud Powell, Vol. 1 (Blue Note, 1949/1953), particularly &quot;Tempus Fugue-It&quot; and &quot;Un Poco Loco.&quot; The live recording Jazz at Massey Hall (Debut, 1956) — with Parker, Gillespie, Mingus, and Roach — documents Powell in a peak performance context</p>
+    <p class="bib-entry">Saunders Mac Lane, Categories for the Working Mathematician, 2nd ed. (Springer, 1998), Chapter III. For the size obstruction generalizing Russell&#x27;s paradox see Jacob Lurie, Higher Topos Theory (Princeton University Press, 2009), §1.2.15</p>
+    <p class="bib-entry">Sonny Sharrock: Black Woman (Vortex, 1969) and Ask the Ages (Axiom, 1991), the latter with Pharoah Sanders, Elvin Jones, and Charnett Moffett</p>
+    <p class="bib-entry">Spinoza’s Ethics, trans. and ed. G. H. R. Parkinson (Oxford University Press, 2000). The claim that God and Nature are the same substance (Deus sive Natura) is the foundation of the Ethics: Part I, Definition 6 and Proposition 14. The third kind of knowledge (sub specie aeternitatis) is developed in Part V, Propositions 25–32. Deleuze’s reading of Spinoza in Expressionism in Philosophy (Zone Books, 1990) is indispensable, and the book’s engagement with Spinoza is indebted to it even where it departs</p>
+    <p class="bib-entry">Sun Ra’s theoretical writings are collected in The Immeasurable Equation: The Collected Poetry and Prose, ed. James L. Wolf and Hartmut Geerken (Waitawhile, 2005)</p>
+    <p class="bib-entry">That log₂(3/2) is irrational follows from the fundamental theorem of arithmetic: if log₂(3/2) = p/q, then 2^(p+q) = 3^q, contradicting unique factorization. Kronecker’s theorem is proved in Walter Rudin, Real and Complex Analysis, 3rd ed. (McGraw-Hill, 1987), Chapter 4</p>
+    <p class="bib-entry">The biographical facts about Django’s hand injury are documented in Michael Dregni, Django: The Life and Music of a Gypsy Legend (Oxford University Press, 2004). The philosophical interpretation — that the injury forced a voicing practice with structural implications for the history of harmonic thinking — is my reading of a consequence Dregni notes empirically but does not theorize</p>
+    <p class="bib-entry">The categorical limit: Saunders Mac Lane, Categories for the Working Mathematician, 2nd ed. (Springer, 1998), Chapter III</p>
+    <p class="bib-entry">The compactness of the major-third orbit follows from the group structure of ℤ/12ℤ: the element 4 (the major third) generates a cyclic subgroup of order 3 (since 4·3 = 12 ≡ 0 mod 12). The three cosets of this subgroup are exactly Δ₁, Δ₂, Δ₃. See David Demsey, &quot;Chromatic Third Relations and Tonal Structure in the Music of John Coltrane,&quot; Annual Review of Jazz Studies 5 (1991), pp. 145–180</p>
+    <p class="bib-entry">The connection between Evans’s rootless voicings and the diminished seventh chord structure is not explicitly drawn in the pedagogical literature. Mark Levine, The Jazz Piano Book (Sher Music, 1989), describes the rootless voicings in detail (pp. 33–63) without noting the enharmonic identity whose structural consequences are developed in Chapter Three</p>
+    <p class="bib-entry">The critique of Deleuze developed throughout this book is not a dismissal. Deleuze’s account of difference (and repetition), and his reading of Spinoza in Expressionism in Philosophy (Zone Books, 1990), are structurally right in ways no alternative account fully matches. The dissatisfaction is with the Virtual as developed in Difference and Repetition, trans. Paul Patton (Columbia University Press, 1994), pp. 208–214: “The virtual is real without being actual, ideal without being abstract.” Badiou’s critique in Deleuze: The Clamor of Being, trans. Louise Burchill (University of Minnesota Press, 2000), and Hallward’s in Out of This World (Verso, 2006), reach similar conclusions from different directions. Žižek’s Organs Without Bodies: On Deleuze and Consequences (Routledge, 2004) presses the charge further, arguing that Deleuze’s plane of immanence secretly reinstates a transcendent One — that immanence, theorized without remainder, always risks becoming its own beyond. This book agrees with the diagnosis: the Virtual is a metaphysical posit, and the limit cannot be populated without being betrayed. Where it parts from Badiou, Hallward, and Žižek is in the rescue operation. What is worth preserving in Deleuze is not a system to be corrected but a set of orientations: that being becomes rather than simply is</p>
+    <p class="bib-entry">The enharmonic identity between the rootless dominant seventh and the diminished seventh chord is noted in Mark Levine, The Jazz Piano Book (Sher Music, 1989), p. 33, without drawing the structural consequences developed here</p>
+    <p class="bib-entry">The identification of S¹ as the categorical limit of the system of projections in In a Mist is a retrospective formal reconstruction. Beiderbecke had no access to category theory (Eilenberg and Mac Lane, 1945). The formal analysis describes the structure of what his ear navigated without the vocabulary to name it</p>
+    <p class="bib-entry">The Kantian template: Critique of Judgment (1790), trans. Werner Pluhar (Hackett, 1987), §§1–22. The critique of the aesthetic attitude that follows is indebted to George Dickie, “The Myth of the Aesthetic Attitude,” American Philosophical Quarterly 1.1 (1964), pp. 56–65, though the positive account developed here departs significantly from Dickie’s institutional theory</p>
+    <p class="bib-entry">The key passage is Philosophical Investigations §217: &quot;If I have exhausted the justifications I have reached bedrock, and my spade is turned. Then I am inclined to say: ’This is simply what I do.’&quot; Wittgenstein, Philosophical Investigations, trans. G. E. M. Anscombe, P. M. S. Hacker, and Joachim Schulte, rev. 4th ed. (Wiley-Blackwell, 2009). The rule-following sections (§§138–242) are the central locus. Kripke’s skeptical reading in Wittgenstein on Rules and Private Language (Harvard University Press, 1982) is influential and importantly mistaken. Cavell’s corrective in The Claim of Reason, Part One, is essential</p>
+    <p class="bib-entry">The Löwenheim-Skolem theorem: if a first-order theory T has an infinite model, it has models of every infinite cardinality. See David Marker, Model Theory: An Introduction (Springer, 2002), Chapter 2. For the philosophical implications — sometimes called the &quot;Skolem paradox&quot; — see Hilary Putnam, &quot;Models and Reality,&quot; Journal of Symbolic Logic 45.3 (1980), pp. 464–482</p>
+    <p class="bib-entry">The Mahavishnu Orchestra: The Inner Mounting Flame (Columbia, 1971) and Birds of Fire (Columbia, 1973). The &quot;nonidiomatic&quot; characterization refers to the jazz tradition from which McLaughlin came</p>
+    <p class="bib-entry">The phrase &quot;cognition at the limit&quot; deliberately echoes and departs from Cavell’s account of criteria in The Claim of Reason (Oxford University Press, 1979). Cavell’s criteria mark what we can and cannot intelligibly say — the limit of grammar, of what counts as a move in a language game. The limit argued for here is material: it is where the practice of sound meets the resistance of what cannot be said, and responds with sound rather than silence</p>
+    <p class="bib-entry">The phrase echoes Derrida’s il n’y a pas de hors-texte — “there is no outside-the-text” (Of Grammatology, trans. Gayatri Chakravorty Spivak [Johns Hopkins University Press, 1976], p. 158) — but the claims are structurally distinct. Derrida’s is a claim about the structure of signification: nothing escapes the differential play of the text, the chain of signifiers, the logic of the trace. This book’s claim is materially grounded: the world has no outside not because everything is textual but because the Resonant Surface is fully actual, requiring no supplement — virtual, withdrawn, or signifying. Where Derrida refuses a ground outside signification, this account refuses a ground outside actuality. The outside that is denied is not the outside of the text but the outside of the world</p>
+    <p class="bib-entry">The Resonant Surface is developed fully in &quot;The Resonant Surface: Aesthetic Form as the Epistemology of Material Immanence&quot; (unpublished ms.). The claim that it is implicitly defined by its processes draws on Bickhard’s account of process-relational ontology: Mark H. Bickhard, &quot;The Biological Foundations of Cognitive Science,&quot; New Ideas in Psychology 27.1 (2009), pp. 75–84</p>
+    <p class="bib-entry">The two-cent narrowing of the equal-tempered fifth and the fourteen-cent sharpening of the major third are standard results. See J. Murray Barbour, Tuning and Temperament: A Historical Survey (Michigan State College Press, 1951</p>
+    <p class="bib-entry">Tristano’s &quot;contrapuntal emergence&quot; strategy is most audible in his 1949 Capitol recordings, particularly &quot;Intuition&quot; and &quot;Digression&quot; — the first recorded freely improvised jazz performances. For a theoretical account, see Ekkehard Jost, Free Jazz (Universal Edition, 1974/Da Capo, 1994), pp. 17–19</p>
+    <p class="bib-entry">Tyner’s quartal voicing practice is analyzed in Thierry Bruyninckx, &quot;McCoy Tyner: A Harmonic Analysis,&quot; Jazz Research 18 (1986), pp. 67–89</p>
+    <p class="bib-entry">Wittgenstein, Tractatus Logico-Philosophicus, 6.421: &quot;It is clear that ethics cannot be expressed. Ethics is transcendental. (Ethics and aesthetics are one.)&quot; Trans. D. F. Pears and B. F. McGuinness (Routledge, 1961). The claim that both ethics and aesthetics show themselves rather than being said connects to 4.121 (what can be shown cannot be said) and to the ladder that must be thrown away (6.54)</p>
+  </div>
+</article>
 </main>
 <script>
 const topbar=document.getElementById('topbar');
